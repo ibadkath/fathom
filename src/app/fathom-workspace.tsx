@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Archive, ArrowUpRight, Bell, CalendarDays, Check, CheckCircle2, ChevronDown,
   Copy, FileText, Filter, Highlighter, Inbox, LayoutGrid, ListFilter,
@@ -52,6 +53,7 @@ function WorkspaceViewPanel({ view, query, setQuery, onOpenMeeting }: { view: Wo
 }
 
 export default function FathomWorkspace() {
+  const router = useRouter();
   const [view, setView] = useState<WorkspaceView>("inbox");
   const [selectedMeeting, setSelectedMeeting] = useState(1);
   const [query, setQuery] = useState("");
@@ -124,6 +126,16 @@ export default function FathomWorkspace() {
     }
     if (button.closest(".settings-nav")) {
       setNotice(`${label} settings are represented in this demo workspace.`);
+      return;
+    }
+    if (button.classList.contains("share-option")) {
+      button.parentElement?.querySelectorAll(".share-option").forEach((option) => option.classList.remove("selected"));
+      button.classList.add("selected");
+      setNotice(label.includes("Entire") ? "The full meeting is selected for sharing." : "The 48-second clip is selected for sharing.");
+      return;
+    }
+    if (button.classList.contains("create-link")) {
+      router.push("/share/q3-product-strategy-clip");
     }
   };
 

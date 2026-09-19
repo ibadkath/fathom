@@ -1,5 +1,5 @@
-import FathomWorkspace from "./fathom-workspace";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <FathomWorkspace />;
+  redirect("/dashboard");
 }
