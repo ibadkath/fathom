@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Capture Copilot transcripts",
+      "type": "shell",
+      "command": "python \"${workspaceFolder}/tools/capture-agent-transcripts.py\"",
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
