@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Meeting {
+  id             String             @id @default(cuid())
+  title          String
+  description    String?
+  startedAt      DateTime
+  durationSec    Int
+  participants   Json
+  audioUrl       String?
+  createdAt      DateTime           @default(now())
+  transcript     TranscriptSegment[]
+  summary        Summary?
+  highlights     Highlight[]
+  shares         Share[]
+}
+
+model TranscriptSegment {
+  id         String   @id @default(cuid())
+  meetingId  String
+  speaker    String
+  text       String
+  startSec   Int
+  endSec     Int
+  meeting    Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  @@index([meetingId, startSec])
+}
+
+model Summary {
+  id           String   @id @default(cuid())
+  meetingId    String   @unique
+  template     String   @default("general")
+  summary      String
+  topics       Json
+  decisions    Json
+  actionItems  Json
+  createdAt    DateTime @default(now())
+  meeting      Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+}
+
+model Highlight {
+  id        String   @id @default(cuid())
+  meetingId String
+  userId    String?
+  startSec  Int
+  endSec    Int
+  note      String?
+  createdAt DateTime @default(now())
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  @@index([meetingId, startSec])
+}
+
+model Share {
+  id        String   @id @default(cuid())
+  meetingId String
+  token     String   @unique
+  startSec  Int?
+  endSec    Int?
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+}
